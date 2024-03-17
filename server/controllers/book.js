@@ -3,8 +3,6 @@ import Book from '../models/Book.js';
 export const addNewBook = async (req, res, next) => {
   try {
     const { name, author, image_url } = req.body;
-    // const newBook = new Book({ name, author, image_url });
-    // const savedBook = await newBook.save();
 
     const newBook = await Book.create({
       name,

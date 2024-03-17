@@ -4,18 +4,8 @@ import ErrorResponse from '../utils/ErrorResponse.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-// SIGNUP
 export const signUp = asyncHandler(async (req, res, next) => {
-  /*
-        Check if user exist(email) [x]
-            - If user exists, return an Error [x]
-            - If user does not exist:
-                - Secure the pw with bcrypt [x]
-                - Store the user in DB [x]
-                - Sign a token [x]
-                - Return the token [x]
 
-    */
   const { firstName, lastName, username, email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
@@ -30,13 +20,12 @@ export const signUp = asyncHandler(async (req, res, next) => {
     email,
     password: hash,
   });
-  const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);  //JWT_SECRET="1234"
-  //   const token = jwt.sign({ uid: newUser }, process.env.JWT_SECRET);
-  //   const token = jwt.sign({ uid: newUser }, process.env.JWT_SECRET, {expiresIn '30m'});
+  const token = jwt.sign({ uid: newUser._id }, process.env.JWT_SECRET);
+
   res.status(201).send({ token });
 });
 
-// LOGIN
+
 export const signIn = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -49,21 +38,19 @@ export const signIn = asyncHandler(async (req, res, next) => {
   const token = jwt.sign({ uid: existingUser._id }, process.env.JWT_SECRET, {
     expiresIn: '30m',
   });
-  res.cookie('token', token, { maxAge: 180000 }); //30mn
+  res.cookie('token', token, { maxAge: 1800000 });
   res.send({ token });
 });
 
-// VerifyUser
+
 export const getUser = asyncHandler(async (req, res, next) => {
-  // const { _id } = req.params;
-  // const { body } = req.body;
-  // const user = await User.findById(body._id);
+
 
   const user = await User.findById(req.uid);
   res.json(user);
 });
 
-// Logout
+
 export const logout = asyncHandler(async (req, res, next) => {
   res.clearCookie('token');
   res.send({ status: 'success' });

@@ -10,18 +10,15 @@ import booksRouter from './routes/booksRouter.js';
 
 const app = express();
 const PORT = 4000;
+app.use(cors({ origin: 'https://prismaticc.netlify.app/', credentials: true }));
 
-app.use(cors()); // Enable Cross-Origin-Resource Sharing
-// app.use(cors({ origin: 'https://website.com' })); allow access only from prod. website
-// app.use(cors({ origin: ['https://website.com', 'https://anotherwebsite.com'] }));
-app.use(express.json()); // Parse incomming requests with JSON payloads
-app.use(cookieParser()); // cookie-parser
+app.use(express.json());
+app.use(cookieParser());
 
-// ROUTES
+
 app.use('/auth', authRouter);
 app.use('/books', booksRouter);
 
 
-// Error Handler
 app.use(errorHandler);
 app.listen(PORT, () => console.log(`Server is running on port:${PORT}`));
